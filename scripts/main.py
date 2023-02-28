@@ -119,7 +119,7 @@ def on_ui_tabs():
     with gr.Blocks() as interface:
         with gr.Row():
             with gr.Column():
-                tb_input = gr.Textbox(label='civit url', interactive=True, value="https://civitai.com/models/5743/style-jelly")
+                tb_input = gr.Textbox(label='civit url', interactive=True, value="")
                 btn_fetch = gr.Button(value='fetch')
 
                 console = gr.Text(elem_id='console')
