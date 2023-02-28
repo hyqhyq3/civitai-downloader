@@ -39,7 +39,7 @@ def fetch(u):
             exists = False
             if os.path.exists(lfn):
                 exists = True
-            btn_code = f"""<input type=button onclick="download(this, '{html.escape(url)}', '{html.escape(model_type)}')" value={'downloaded' if exists else 'download'} {'disabled' if exists else ''} class="gr-button gr-button-lg gr-button-secondary"></input>"""
+            btn_code = f"""<input type=button onclick="download(this, '{html.escape(url)}', '{html.escape(model_type)}', '{html.escape(fn)}')" value={'downloaded' if exists else 'download'} {'disabled' if exists else ''} class="gr-button gr-button-lg gr-button-secondary"></input>"""
             code += f'<tr><td>{vn}</td><td>{fmt}</td><td>{size} MB</td><td>{btn_code}</td></tr>'
 
     code += '</tbody></table>'
@@ -53,11 +53,17 @@ def get_path_by_type(t):
     elif t == 'Checkpoint':
         return 'models/Stable-diffusion'
 
-def download(u,t):
+def download(u,t,n):
+    # reject slash and backslash
+    if re.search(r'[/\\]|^\.\.', n):
+        return
+    # reject if url not start with https://civitai.com/api/download
+    if not u.startswith('https://civitai.com/api/download/models'):
+        return
     download_path = get_path_by_type(t)
     
-    aria2c = f"aria2c -x 16 -s 16 -d {download_path} {u}"
-    subprocess.Popen(aria2c, shell=True)
+    import urllib.request
+    urllib.request.urlretrieve(u, os.path.join(download_path,n))
     return 
 
 def on_ui_tabs():
